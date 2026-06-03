@@ -9,13 +9,19 @@
 <body>
   <header>
     <h1>⚖️ Debate Agents</h1>
-    <p class="subtitle">Two AI agents argue a topic. A judge decides the winner.</p>
+    <p class="subtitle">Two AI agents argue a topic. A judge scores and decides the winner.</p>
   </header>
 
   <main>
     <section class="topic-form">
-      <input id="topic-input" type="text" placeholder="Enter a debate topic…" maxlength="200" />
-      <button id="debate-btn" onclick="startDebate()">Start Debate</button>
+      <textarea id="topic-input" placeholder="Enter a debate topic… (Enter to start, Shift+Enter for new line)" maxlength="300" rows="2"></textarea>
+      <div class="form-controls">
+        <select id="difficulty-select">
+          <option value="easy">Easy — Haiku, concise</option>
+          <option value="hard" selected>Hard — Sonnet, detailed</option>
+        </select>
+        <button id="debate-btn" onclick="startDebate()">Start Debate</button>
+      </div>
     </section>
 
     <section class="status-bar" id="status-bar" style="display:none;">
@@ -23,35 +29,85 @@
     </section>
 
     <section class="debate-arena" id="debate-arena" style="display:none;">
+
+      <!-- PRO panel -->
       <div class="agent-panel pro-panel">
         <div class="panel-header">
           <span class="agent-label">🟢 PRO</span>
           <span class="round-label" id="pro-round">Opening Argument</span>
         </div>
-        <div class="argument-box" id="pro-opening"></div>
-        <div class="closing-box" id="pro-closing" style="display:none;">
-          <div class="closing-label">Closing Statement</div>
-          <div id="pro-closing-text"></div>
+        <div class="round-section">
+          <div class="round-tag">Round 1 — Opening</div>
+          <div class="argument-box" id="pro-opening"></div>
+        </div>
+        <div class="round-section" id="pro-reb1-section" style="display:none;">
+          <div class="round-tag">Round 2 — Rebuttal</div>
+          <div class="argument-box" id="pro-reb1"></div>
+        </div>
+        <div class="round-section" id="pro-reb2-section" style="display:none;">
+          <div class="round-tag">Round 3 — Rebuttal</div>
+          <div class="argument-box" id="pro-reb2"></div>
+        </div>
+        <div class="round-section" id="pro-close-section" style="display:none;">
+          <div class="round-tag closing-tag">Closing Statement</div>
+          <div class="argument-box" id="pro-close"></div>
         </div>
       </div>
 
+      <!-- CON panel -->
       <div class="agent-panel con-panel">
         <div class="panel-header">
           <span class="agent-label">🔴 CON</span>
           <span class="round-label" id="con-round">Opening Argument</span>
         </div>
-        <div class="argument-box" id="con-opening"></div>
-        <div class="closing-box" id="con-closing" style="display:none;">
-          <div class="closing-label">Closing Statement</div>
-          <div id="con-closing-text"></div>
+        <div class="round-section">
+          <div class="round-tag">Round 1 — Opening</div>
+          <div class="argument-box" id="con-opening"></div>
+        </div>
+        <div class="round-section" id="con-reb1-section" style="display:none;">
+          <div class="round-tag">Round 2 — Rebuttal</div>
+          <div class="argument-box" id="con-reb1"></div>
+        </div>
+        <div class="round-section" id="con-reb2-section" style="display:none;">
+          <div class="round-tag">Round 3 — Rebuttal</div>
+          <div class="argument-box" id="con-reb2"></div>
+        </div>
+        <div class="round-section" id="con-close-section" style="display:none;">
+          <div class="round-tag closing-tag">Closing Statement</div>
+          <div class="argument-box" id="con-close"></div>
         </div>
       </div>
+
     </section>
 
+    <!-- Judge panel -->
     <section class="judge-panel" id="judge-panel" style="display:none;">
       <div class="judge-header">⚖️ Judge's Verdict</div>
       <div class="judge-text" id="judge-text"></div>
     </section>
+
+    <!-- Fact-checker panel -->
+    <section class="factcheck-panel" id="factcheck-panel" style="display:none;">
+      <div class="factcheck-header">🔍 Fact-Checker's Report</div>
+      <div class="factcheck-text" id="factcheck-text"></div>
+    </section>
+
+    <!-- Share bar -->
+    <div class="share-bar" id="share-bar" style="display:none;">
+      <button id="share-btn" onclick="shareDebate()">📋 Copy Debate as Text</button>
+    </div>
+
+    <!-- History panel -->
+    <section class="history-panel" id="history-panel">
+      <div class="history-header">
+        🕑 Past Debates
+        <button class="refresh-btn" onclick="loadHistory()">↻ Refresh</button>
+      </div>
+      <ul class="history-list" id="history-list">
+        <li class="history-empty">No past debates yet.</li>
+      </ul>
+    </section>
+
   </main>
 
   <script src="/static/app.js"></script>
