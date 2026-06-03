@@ -61,7 +61,10 @@ function resetUI() {
     const el = document.getElementById(id);
     if (el) el.textContent = "";
   });
-  document.getElementById("judge-text").innerHTML = "";
+  document.getElementById("prelim-judge-text").innerHTML = "";
+  document.getElementById("prelim-judge-text").dataset.raw = "";
+  document.getElementById("final-judge-text").innerHTML = "";
+  document.getElementById("final-judge-text").dataset.raw = "";
 
   const sections = ["pro-reb1-section", "con-reb1-section", "pro-reb2-section",
                     "con-reb2-section", "pro-close-section", "con-close-section"];
@@ -69,8 +72,9 @@ function resetUI() {
     document.getElementById(id).style.display = "none";
   });
 
-  document.getElementById("judge-panel").style.display = "none";
+  document.getElementById("prelim-judge-panel").style.display = "none";
   document.getElementById("factcheck-panel").style.display = "none";
+  document.getElementById("final-judge-panel").style.display = "none";
   document.getElementById("share-bar").style.display = "none";
   document.getElementById("pro-round").textContent = "Opening Argument";
   document.getElementById("con-round").textContent = "Opening Argument";
@@ -106,14 +110,21 @@ function startDebate() {
       document.getElementById(AGENT_SECTION[agent]).style.display = "block";
     }
 
-    if (agent === "judge") {
-      document.getElementById("judge-panel").style.display = "block";
-      setStreamTarget(document.getElementById("judge-text"));
-      // Render markdown incrementally — rebuild each time
-      const raw = (document.getElementById("judge-text").dataset.raw || "") + chunk;
-      document.getElementById("judge-text").dataset.raw = raw;
-      document.getElementById("judge-text").innerHTML = renderJudgeMarkdown(raw);
-      setStatus("⚖️ Judge is deliberating…");
+    if (agent === "prelim_judge") {
+      document.getElementById("prelim-judge-panel").style.display = "block";
+      setStreamTarget(document.getElementById("prelim-judge-text"));
+      const raw = (document.getElementById("prelim-judge-text").dataset.raw || "") + chunk;
+      document.getElementById("prelim-judge-text").dataset.raw = raw;
+      document.getElementById("prelim-judge-text").innerHTML = renderJudgeMarkdown(raw);
+      setStatus("⚖️ Judge is giving preliminary verdict…");
+
+    } else if (agent === "final_judge") {
+      document.getElementById("final-judge-panel").style.display = "block";
+      setStreamTarget(document.getElementById("final-judge-text"));
+      const raw = (document.getElementById("final-judge-text").dataset.raw || "") + chunk;
+      document.getElementById("final-judge-text").dataset.raw = raw;
+      document.getElementById("final-judge-text").innerHTML = renderJudgeMarkdown(raw);
+      setStatus("🏆 Judge is delivering final verdict…");
 
     } else if (agent === "factcheck") {
       document.getElementById("factcheck-panel").style.display = "block";
@@ -174,8 +185,9 @@ function shareDebate() {
     ["CON — Round 3 Rebuttal",   document.getElementById("con-reb2")?.textContent],
     ["PRO — Closing Statement",  document.getElementById("pro-close")?.textContent],
     ["CON — Closing Statement",  document.getElementById("con-close")?.textContent],
-    ["JUDGE'S VERDICT",          document.getElementById("judge-text")?.innerText],
+    ["PRELIMINARY VERDICT",       document.getElementById("prelim-judge-text")?.innerText],
     ["FACT-CHECKER'S REPORT",    document.getElementById("factcheck-text")?.textContent],
+    ["FINAL VERDICT",            document.getElementById("final-judge-text")?.innerText],
   ];
   const text = sections
     .filter(([, c]) => c?.trim())
@@ -240,13 +252,18 @@ async function loadPastDebate(id) {
     fill("con-close", d.con_close, "con-close-section");
     fill("factcheck-text", d.factcheck);
 
-    if (d.judge) {
-      document.getElementById("judge-panel").style.display = "block";
-      document.getElementById("judge-text").dataset.raw = d.judge;
-      document.getElementById("judge-text").innerHTML = renderJudgeMarkdown(d.judge);
+    if (d.prelim_judge) {
+      document.getElementById("prelim-judge-panel").style.display = "block";
+      document.getElementById("prelim-judge-text").dataset.raw = d.prelim_judge;
+      document.getElementById("prelim-judge-text").innerHTML = renderJudgeMarkdown(d.prelim_judge);
     }
     if (d.factcheck) {
       document.getElementById("factcheck-panel").style.display = "block";
+    }
+    if (d.final_judge) {
+      document.getElementById("final-judge-panel").style.display = "block";
+      document.getElementById("final-judge-text").dataset.raw = d.final_judge;
+      document.getElementById("final-judge-text").innerHTML = renderJudgeMarkdown(d.final_judge);
     }
     document.getElementById("share-bar").style.display = "block";
   } catch (e) {

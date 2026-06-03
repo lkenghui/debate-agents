@@ -8,7 +8,7 @@ DB_PATH = os.getenv("DB_PATH", "debates.db")
 ALLOWED_COLUMNS = {
     "pro_opening", "con_opening", "pro_reb1", "con_reb1",
     "pro_reb2", "con_reb2", "pro_close", "con_close",
-    "judge", "factcheck", "winner", "finished_at",
+    "prelim_judge", "factcheck", "final_judge", "winner", "finished_at",
 }
 
 
@@ -22,22 +22,23 @@ def init_db():
     with get_conn() as conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS debates (
-                id          INTEGER PRIMARY KEY AUTOINCREMENT,
-                topic       TEXT    NOT NULL,
-                difficulty  TEXT    NOT NULL DEFAULT 'hard',
-                started_at  TEXT    NOT NULL,
-                finished_at TEXT,
-                pro_opening TEXT,
-                con_opening TEXT,
-                pro_reb1    TEXT,
-                con_reb1    TEXT,
-                pro_reb2    TEXT,
-                con_reb2    TEXT,
-                pro_close   TEXT,
-                con_close   TEXT,
-                judge       TEXT,
-                factcheck   TEXT,
-                winner      TEXT
+                id           INTEGER PRIMARY KEY AUTOINCREMENT,
+                topic        TEXT    NOT NULL,
+                difficulty   TEXT    NOT NULL DEFAULT 'hard',
+                started_at   TEXT    NOT NULL,
+                finished_at  TEXT,
+                pro_opening  TEXT,
+                con_opening  TEXT,
+                pro_reb1     TEXT,
+                con_reb1     TEXT,
+                pro_reb2     TEXT,
+                con_reb2     TEXT,
+                pro_close    TEXT,
+                con_close    TEXT,
+                prelim_judge TEXT,
+                factcheck    TEXT,
+                final_judge  TEXT,
+                winner       TEXT
             )
         """)
 
@@ -63,13 +64,14 @@ def update_debate(debate_id: int, **fields):
         )
 
 
-def finish_debate(debate_id: int, judge_text: str, factcheck_text: str):
-    winner = _extract_winner(judge_text)
+def finish_debate(debate_id: int, prelim_text: str, factcheck_text: str, final_text: str):
+    winner = _extract_winner(final_text)
     update_debate(
         debate_id,
         finished_at=datetime.now(timezone.utc).isoformat(),
-        judge=judge_text,
+        prelim_judge=prelim_text,
         factcheck=factcheck_text,
+        final_judge=final_text,
         winner=winner,
     )
 

@@ -82,18 +82,35 @@ def con_system(topic: str, word_limit: int) -> str:
     )
 
 
-def judge_system(topic: str) -> str:
+def prelim_judge_system(topic: str) -> str:
     return (
-        f"You are an impartial debate judge evaluating a structured debate on: '{topic}'. "
-        "Evaluate both sides purely on argument quality. Use this EXACT format:\n\n"
+        f"You are an impartial debate judge giving a PRELIMINARY verdict on: '{topic}'. "
+        "Evaluate both sides purely on argument quality — ignore whether claims are factually accurate for now. "
+        "Use this EXACT format:\n\n"
         "## Logic & Evidence\n"
         "PRO: X/10 — one sentence. CON: X/10 — one sentence.\n\n"
         "## Argument Structure\n"
         "PRO: X/10 — one sentence. CON: X/10 — one sentence.\n\n"
         "## Rhetoric & Persuasion\n"
         "PRO: X/10 — one sentence. CON: X/10 — one sentence.\n\n"
-        "## Verdict\n"
-        "State the winner (PRO or CON) and explain in 2-3 sentences why they won. Be decisive."
+        "## Preliminary Verdict\n"
+        "State the current leader (PRO or CON) based on argument quality alone. "
+        "Note this may change after fact-checking."
+    )
+
+
+def final_judge_system(topic: str) -> str:
+    return (
+        f"You are an impartial debate judge delivering a FINAL verdict on: '{topic}'. "
+        "You have already given a preliminary verdict. Now you have a fact-checker's report "
+        "identifying questionable claims. Adjust your scores if claims were debunked, then declare a final winner. "
+        "Use this EXACT format:\n\n"
+        "## Fact-Check Impact\n"
+        "Explain in 2-3 sentences how the fact-checker's findings affect your preliminary scores, if at all.\n\n"
+        "## Adjusted Scores\n"
+        "PRO: X/10 overall. CON: X/10 overall. One sentence each explaining any changes.\n\n"
+        "## Final Verdict\n"
+        "State the winner (PRO or CON) and explain in 2-3 sentences. Be decisive."
     )
 
 
@@ -191,7 +208,22 @@ def judge_prompt(topic: str, pro_text: str, con_text: str, pro_reb1: str, con_re
         f"PRO Rebuttal 1:\n{pro_reb1}\n\nCON Rebuttal 1:\n{con_reb1}\n\n"
         f"PRO Rebuttal 2:\n{pro_reb2}\n\nCON Rebuttal 2:\n{con_reb2}\n\n"
         f"PRO Closing:\n{pro_close}\n\nCON Closing:\n{con_close}\n\n"
-        "Evaluate the debate and declare a winner."
+        "Give your preliminary verdict based on argument quality alone."
+    )
+
+
+def final_judge_prompt(topic: str, pro_text: str, con_text: str, pro_reb1: str, con_reb1: str,
+                       pro_reb2: str, con_reb2: str, pro_close: str, con_close: str,
+                       prelim_verdict: str, factcheck_text: str) -> str:
+    return (
+        f"Debate topic: '{topic}'\n\n"
+        f"PRO Opening:\n{pro_text}\n\nCON Opening:\n{con_text}\n\n"
+        f"PRO Rebuttal 1:\n{pro_reb1}\n\nCON Rebuttal 1:\n{con_reb1}\n\n"
+        f"PRO Rebuttal 2:\n{pro_reb2}\n\nCON Rebuttal 2:\n{con_reb2}\n\n"
+        f"PRO Closing:\n{pro_close}\n\nCON Closing:\n{con_close}\n\n"
+        f"YOUR PRELIMINARY VERDICT:\n{prelim_verdict}\n\n"
+        f"FACT-CHECKER'S REPORT:\n{factcheck_text}\n\n"
+        "Now deliver your final verdict, taking the fact-checker's findings into account."
     )
 
 

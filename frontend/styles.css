@@ -173,6 +173,10 @@ header h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.5px; }
 }
 .judge-section:first-child { margin-top: 0; }
 
+/* ── Final judge panel ───────────────────────────────────────────────────── */
+.final-judge-panel { border-top-color: #22c55e; }
+.final-judge-panel .judge-header { color: #22c55e; }
+
 /* ── Fact-checker panel ──────────────────────────────────────────────────── */
 .factcheck-panel {
   max-width: 700px;

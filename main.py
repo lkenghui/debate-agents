@@ -7,12 +7,12 @@ from database import init_db, create_debate, update_debate, finish_debate, list_
 from agents import (
     stream_agent, stream_judge, stream_factcheck,
     DIFFICULTY_CONFIG,
-    pro_system, con_system, judge_system, factcheck_system,
+    pro_system, con_system, prelim_judge_system, final_judge_system, factcheck_system,
     pro_opening_prompt, con_opening_prompt,
     pro_reb1_prompt, con_reb1_prompt,
     pro_reb2_prompt, con_reb2_prompt,
     pro_closing_prompt, con_closing_prompt,
-    judge_prompt, factcheck_prompt,
+    judge_prompt, final_judge_prompt, factcheck_prompt,
 )
 
 init_db()
@@ -151,14 +151,14 @@ def debate_generator(topic: str, difficulty: str):
         yield sse("error", "Con agent timed out."); return
     update_debate(debate_id, con_close=con_close)
 
-    # Round 9 — Judge
-    judge_text = ""
-    for item in collect("judge", judge_system(topic), judge_prompt(topic, pro_text, con_text, pro_reb1, con_reb1, pro_reb2, con_reb2, pro_close, con_close), use_judge=True):
+    # Round 9 — Preliminary judge
+    prelim_text = ""
+    for item in collect("prelim_judge", prelim_judge_system(topic), judge_prompt(topic, pro_text, con_text, pro_reb1, con_reb1, pro_reb2, con_reb2, pro_close, con_close), use_judge=True):
         if item.startswith("__FULL__"):
-            judge_text = item.split(":", 1)[1]
+            prelim_text = item.split(":", 1)[1]
         else:
             yield item
-    if judge_text.startswith("__ERROR__"):
+    if prelim_text.startswith("__ERROR__"):
         yield sse("error", "Judge agent timed out."); return
 
     # Round 10 — Fact-checker
@@ -168,8 +168,20 @@ def debate_generator(topic: str, difficulty: str):
             factcheck_text = item.split(":", 1)[1]
         else:
             yield item
+    if factcheck_text.startswith("__ERROR__"):
+        yield sse("error", "Fact-checker agent timed out."); return
 
-    finish_debate(debate_id, judge_text, factcheck_text)
+    # Round 11 — Final judge
+    final_text = ""
+    for item in collect("final_judge", final_judge_system(topic), final_judge_prompt(topic, pro_text, con_text, pro_reb1, con_reb1, pro_reb2, con_reb2, pro_close, con_close, prelim_text, factcheck_text), use_judge=True):
+        if item.startswith("__FULL__"):
+            final_text = item.split(":", 1)[1]
+        else:
+            yield item
+    if final_text.startswith("__ERROR__"):
+        yield sse("error", "Final judge agent timed out."); return
+
+    finish_debate(debate_id, prelim_text, factcheck_text, final_text)
     yield sse("done", "")
 
 
