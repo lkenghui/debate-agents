@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debate Agents</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>⚖️ Debate Agents</h1>
+    <p class="subtitle">Two AI agents argue a topic. A judge decides the winner.</p>
+  </header>
+
+  <main>
+    <section class="topic-form">
+      <input id="topic-input" type="text" placeholder="Enter a debate topic…" maxlength="200" />
+      <button id="debate-btn" onclick="startDebate()">Start Debate</button>
+    </section>
+
+    <section class="status-bar" id="status-bar" style="display:none;">
+      <span id="status-text">Preparing debate…</span>
+    </section>
+
+    <section class="debate-arena" id="debate-arena" style="display:none;">
+      <div class="agent-panel pro-panel">
+        <div class="panel-header">
+          <span class="agent-label">🟢 PRO</span>
+          <span class="round-label" id="pro-round">Opening Argument</span>
+        </div>
+        <div class="argument-box" id="pro-opening"></div>
+        <div class="closing-box" id="pro-closing" style="display:none;">
+          <div class="closing-label">Closing Statement</div>
+          <div id="pro-closing-text"></div>
+        </div>
+      </div>
+
+      <div class="agent-panel con-panel">
+        <div class="panel-header">
+          <span class="agent-label">🔴 CON</span>
+          <span class="round-label" id="con-round">Opening Argument</span>
+        </div>
+        <div class="argument-box" id="con-opening"></div>
+        <div class="closing-box" id="con-closing" style="display:none;">
+          <div class="closing-label">Closing Statement</div>
+          <div id="con-closing-text"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="judge-panel" id="judge-panel" style="display:none;">
+      <div class="judge-header">⚖️ Judge's Verdict</div>
+      <div class="judge-text" id="judge-text"></div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #0f1117;
+  color: #e2e8f0;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  color: #94a3b8;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Topic form */
+.topic-form {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 700px;
+  margin: 0 auto 1.5rem;
+}
+
+#topic-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #1e2533;
+  color: #e2e8f0;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#topic-input:focus { border-color: #6366f1; }
+
+#debate-btn {
+  padding: 0.75rem 1.5rem;
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+#debate-btn:hover { background: #4f46e5; }
+#debate-btn:disabled { background: #334155; cursor: not-allowed; }
+
+/* Status bar */
+.status-bar {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* Debate arena */
+.debate-arena {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  max-width: 1100px;
+  margin: 0 auto 1.5rem;
+}
+
+@media (max-width: 700px) {
+  .debate-arena { grid-template-columns: 1fr; }
+}
+
+.agent-panel {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #1e2533;
+}
+
+.pro-panel { border-top: 3px solid #22c55e; }
+.con-panel { border-top: 3px solid #ef4444; }
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #1e2533;
+}
+
+.agent-label { font-weight: 700; font-size: 0.95rem; }
+.round-label { font-size: 0.8rem; color: #94a3b8; }
+
+.argument-box {
+  padding: 1rem;
+  background: #161b27;
+  min-height: 120px;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.closing-box {
+  border-top: 1px solid #1e2533;
+  background: #12171f;
+}
+
+.closing-label {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #1e2533;
+}
+
+.closing-box > div:last-child {
+  padding: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* Judge panel */
+.judge-panel {
+  max-width: 700px;
+  margin: 0 auto;
+  border-radius: 12px;
+  border: 1px solid #1e2533;
+  border-top: 3px solid #f59e0b;
+  overflow: hidden;
+}
+
+.judge-header {
+  padding: 0.75rem 1rem;
+  background: #1e2533;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #f59e0b;
+}
+
+.judge-text {
+  padding: 1.25rem;
+  background: #161b27;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  min-height: 80px;
+}
